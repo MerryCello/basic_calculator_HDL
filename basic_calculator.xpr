@@ -128,9 +128,19 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/sources_1/imports/PmodKYPD_Demo/kypd_decoder.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../Users/kevin/OneDrive/Documents/2021-Fall/ECEN-340_Digital-Systems-Design/w-11-12-13_Final-project/pmodkypd_demo_verilog/PmodKYPD_Demo/kypd_decoder.v"/>
+          <Attr Name="ImportTime" Val="1638213975"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="calc_4fun"/>
+        <Option Name="TopModule" Val="Calc_4fun"/>
         <Option Name="TopAutoSet" Val="TRUE"/>
       </Config>
     </FileSet>
@@ -152,7 +162,7 @@
       <Filter Type="Srcs"/>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="calc_4fun"/>
+        <Option Name="TopModule" Val="Calc_4fun"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TopAutoSet" Val="TRUE"/>
         <Option Name="TransportPathDelay" Val="0"/>
