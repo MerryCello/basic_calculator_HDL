@@ -31,6 +31,7 @@ module VII_seg_x4_top #(parameter SIMULATING = 0)(
     wire clkd;              // Slowed down clock
     wire [3:0] digit_sel;   // The digit to turn on
     reg [3:0] hex_num;      // The number to display (from the switches)
+    reg [3:0] anSel;        // The anode(s) that is/are to be on/off
     
     // Bring down the clock frequency, so the display won't
     // seem to flicker to the human eye
@@ -40,10 +41,28 @@ module VII_seg_x4_top #(parameter SIMULATING = 0)(
         .clk_div(clkd)
     );
     
+    // Turn off digits that are leading zeros
+    always@ (sw) begin
+      if (sw[15:12] == 4'h0) begin
+         anSel = 4'b0111;
+         if (sw[11:8] == 4'h0) begin
+            anSel = 4'b0011;
+            if (sw[7:4] == 4'h0) begin
+               anSel = 4'b0001;
+               if (sw[3:0] == 4'h0)
+                  anSel = 4'b0000;
+            end
+         end
+      end
+      else
+         anSel = 4'b1111;
+    end
+    
     // Select which 7 seg digit to use
     Digit_selector d_sel(
         .clk(clkd),
         .rst(btnC),
+        .anSel(anSel),
         .digit_sel(digit_sel)
     );
 

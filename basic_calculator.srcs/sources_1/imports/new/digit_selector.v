@@ -23,6 +23,7 @@
 module Digit_selector(
       input clk,
       input rst,
+      input [3:0] anSel,
       output reg [3:0] digit_sel
    );
    reg [1:0] count;
@@ -41,10 +42,10 @@ module Digit_selector(
     // select which digit to use based on the count number
     always @(count) begin
         case (count)
-            2'b00: digit_sel = 4'b1110;
-            2'b01: digit_sel = 4'b1101;
-            2'b10: digit_sel = 4'b1011;
-            2'b11: digit_sel = 4'b0111;
+            2'b00: digit_sel = anSel[0] ? 4'b1110 : 4'b1111;
+            2'b01: digit_sel = anSel[1] ? 4'b1101 : 4'b1111;
+            2'b10: digit_sel = anSel[2] ? 4'b1011 : 4'b1111;
+            2'b11: digit_sel = anSel[3] ? 4'b0111 : 4'b1111;
             default: digit_sel = 4'bxxxx;   // Should never get here, but ya never know!
         endcase
     end
