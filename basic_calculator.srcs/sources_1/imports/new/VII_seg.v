@@ -26,6 +26,8 @@ module VII_seg(
     output dp
     );
     assign dp = 1'b1;
+    
+    initial seg = 7'h00;
 
     always @(hex_num) begin
         // All the cases from 0-15 and the corresponding segments to 'ground' or turn on.

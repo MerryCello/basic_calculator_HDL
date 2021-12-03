@@ -21,11 +21,13 @@
 
 
 module Digit_selector(
-    input clk,
-    input rst,
-    output reg [3:0] digit_sel
-    );
-    reg [1:0] count;
+      input clk,
+      input rst,
+      output reg [3:0] digit_sel
+   );
+   reg [1:0] count;
+   
+   initial begin digit_sel = 4'b1110; count = 2'b00; end
     
     // Count from 0 to 3 repeatedly
     always @ (posedge clk, posedge rst) begin
