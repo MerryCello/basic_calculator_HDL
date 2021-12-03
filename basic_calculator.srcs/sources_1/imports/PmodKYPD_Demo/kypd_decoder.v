@@ -17,148 +17,197 @@
 // Revision History: 
 // 						Revision 0.01 - File Created (Michelle Yu)
 //							Revision 0.02 - Converted from VHDL to Verilog (Josh Sackos)
-//
-// Source: https://digilent.com/reference/pmod/pmodkypd/start
-//
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ==============================================================================================
 // 												Define Module
 // ==============================================================================================
-module Kypd_decoder(
-    input clk,                   // 100MHz onboard clock
-    input      [3:0] row,        // Rows on KYPD
-    output reg [3:0] col,        // Columns on KYPD
-    output reg [3:0] decodeOut   // Output data
+module Kypd_decoder #(parameter SIMULATING = 0)(
+    clk,
+    Row,
+    Col,
+    DecodeOut,
+    keyPress_one
     );
+
+// ==============================================================================================
+// 											Port Declarations
+// ==============================================================================================
+    input clk;						// 100MHz onboard clock
+    input [3:0] Row;				// Rows on KYPD
+    output [3:0] Col;			// Columns on KYPD
+    output [3:0] DecodeOut;	// Output data
+    output keyPress_one;      // Single pulse when a key is pressed
+
+// ==============================================================================================
+// 							  		Parameters, Regsiters, and Wires
+// ==============================================================================================
+	
+	// Output wires and registers
+	reg [3:0] Col;
+	reg [3:0] DecodeOut;
 	
 	// Count register
-	reg [19:0] sclk;
+	reg [(SIMULATING ? 3 : 19):0] sclk;
+	
+	// Key press pulse registers
+	reg keyPress, keyPress_tm1, keyPress_one;
 
 // ==============================================================================================
 // 												Implementation
 // ==============================================================================================
 
+   initial begin
+      DecodeOut = 4'h0;
+      keyPress_tm1 = 1'b0;
+      keyPress_one = 1'b0;
+      keyPress     = 1'b0;
+      Col = 4'b0111;
+      sclk = 4'h0;
+   end
+   
 	always @(posedge clk) begin
 
 			// 1ms
-			if (sclk == 20'b00011000011010100000) begin
+			if (sclk == (SIMULATING ? 4'h0 : 20'b00011000011010100000)) begin
 				//C1
-				col <= 4'b0111;
+				Col <= 4'b0111;
 				sclk <= sclk + 1'b1;
 			end
 			
 			// check row pins
-			else if(sclk == 20'b00011000011010101000) begin
+			else if(sclk == (SIMULATING ? 4'h1 : 20'b00011000011010101000)) begin
 				//R1
-				if (row == 4'b0111) begin
-					decodeOut <= 4'b0001;		//1
+				if (Row == 4'b0111) begin
+					DecodeOut <= 4'b0001;		//1
+					keyPress <= 1'b1;
 				end
 				//R2
-				else if(row == 4'b1011) begin
-					decodeOut <= 4'b0100; 		//4
+				else if(Row == 4'b1011) begin
+					DecodeOut <= 4'b0100; 		//4
+					keyPress <= 1'b1;
 				end
 				//R3
-				else if(row == 4'b1101) begin
-					decodeOut <= 4'b0111; 		//7
+				else if(Row == 4'b1101) begin
+					DecodeOut <= 4'b0111; 		//7
+					keyPress <= 1'b1;
 				end
 				//R4
-				else if(row == 4'b1110) begin
-					decodeOut <= 4'b0000; 		//0
+				else if(Row == 4'b1110) begin
+					DecodeOut <= 4'b0000; 		//0
+					keyPress <= 1'b1;
 				end
 				sclk <= sclk + 1'b1;
 			end
 
 			// 2ms
-			else if(sclk == 20'b00110000110101000000) begin
+			else if(sclk == (SIMULATING ? 4'h2 : 20'b00110000110101000000)) begin
 				//C2
-				col<= 4'b1011;
+				Col<= 4'b1011;
 				sclk <= sclk + 1'b1;
 			end
 			
 			// check row pins
-			else if(sclk == 20'b00110000110101001000) begin
+			else if(sclk == (SIMULATING ? 4'h3 : 20'b00110000110101001000)) begin
 				//R1
-				if (row == 4'b0111) begin
-					decodeOut <= 4'b0010; 		//2
+				if (Row == 4'b0111) begin
+					DecodeOut <= 4'b0010; 		//2
+					keyPress <= 1'b1;
 				end
 				//R2
-				else if(row == 4'b1011) begin
-					decodeOut <= 4'b0101; 		//5
+				else if(Row == 4'b1011) begin
+					DecodeOut <= 4'b0101; 		//5
+					keyPress <= 1'b1;
 				end
 				//R3
-				else if(row == 4'b1101) begin
-					decodeOut <= 4'b1000; 		//8
+				else if(Row == 4'b1101) begin
+					DecodeOut <= 4'b1000; 		//8
+					keyPress <= 1'b1;
 				end
 				//R4
-				else if(row == 4'b1110) begin
-					decodeOut <= 4'b1111; 		//F
+				else if(Row == 4'b1110) begin
+					DecodeOut <= 4'b1111; 		//F
+					keyPress <= 1'b1;
 				end
 				sclk <= sclk + 1'b1;
 			end
 
 			//3ms
-			else if(sclk == 20'b01001001001111100000) begin
+			else if(sclk == (SIMULATING ? 4'h4 : 20'b01001001001111100000)) begin
 				//C3
-				col<= 4'b1101;
+				Col<= 4'b1101;
 				sclk <= sclk + 1'b1;
 			end
 			
 			// check row pins
-			else if(sclk == 20'b01001001001111101000) begin
+			else if(sclk == (SIMULATING ? 4'h5 : 20'b01001001001111101000)) begin
 				//R1
-				if(row == 4'b0111) begin
-					decodeOut <= 4'b0011; 		//3	
+				if(Row == 4'b0111) begin
+					DecodeOut <= 4'b0011; 		//3	
+					keyPress <= 1'b1;
 				end
 				//R2
-				else if(row == 4'b1011) begin
-					decodeOut <= 4'b0110; 		//6
+				else if(Row == 4'b1011) begin
+					DecodeOut <= 4'b0110; 		//6
+					keyPress <= 1'b1;
 				end
 				//R3
-				else if(row == 4'b1101) begin
-					decodeOut <= 4'b1001; 		//9
+				else if(Row == 4'b1101) begin
+					DecodeOut <= 4'b1001; 		//9
+					keyPress <= 1'b1;
 				end
 				//R4
-				else if(row == 4'b1110) begin
-					decodeOut <= 4'b1110; 		//E
+				else if(Row == 4'b1110) begin
+					DecodeOut <= 4'b1110; 		//E
+					keyPress <= 1'b1;
 				end
 
 				sclk <= sclk + 1'b1;
 			end
 
 			//4ms
-			else if(sclk == 20'b01100001101010000000) begin
+			else if(sclk == (SIMULATING ? 4'h6 : 20'b01100001101010000000)) begin
 				//C4
-				col<= 4'b1110;
+				Col<= 4'b1110;
 				sclk <= sclk + 1'b1;
 			end
 
 			// Check row pins
-			else if(sclk == 20'b01100001101010001000) begin
+			else if(sclk == (SIMULATING ? 4'h7 : 20'b01100001101010001000)) begin
 				//R1
-				if(row == 4'b0111) begin
-					decodeOut <= 4'b1010; //A
+				if(Row == 4'b0111) begin
+					DecodeOut <= 4'b1010; //A
+					keyPress <= 1'b1;
 				end
 				//R2
-				else if(row == 4'b1011) begin
-					decodeOut <= 4'b1011; //B
+				else if(Row == 4'b1011) begin
+					DecodeOut <= 4'b1011; //B
+					keyPress <= 1'b1;
 				end
 				//R3
-				else if(row == 4'b1101) begin
-					decodeOut <= 4'b1100; //C
+				else if(Row == 4'b1101) begin
+					DecodeOut <= 4'b1100; //C
+					keyPress <= 1'b1;
 				end
 				//R4
-				else if(row == 4'b1110) begin
-					decodeOut <= 4'b1101; //D
+				else if(Row == 4'b1110) begin
+					DecodeOut <= 4'b1101; //D
+					keyPress <= 1'b1;
 				end
-				sclk <= 20'b00000000000000000000;
+				sclk <= (SIMULATING ? 4'h0 : 20'b00000000000000000000);
+				
+            // reset because no key is being pressed
+            keyPress <= 1'b0;
 			end
 
 			// Otherwise increment
 			else begin
 				sclk <= sclk + 1'b1;
 			end
-			
 	end
 
+   // send a pulse the length of the clk when any key was pressed
+   always@ (keyPress_tm1, keyPress) keyPress_one = keyPress && !keyPress_tm1;
+   always@ (posedge clk) keyPress_tm1 <= keyPress;
+   
 endmodule

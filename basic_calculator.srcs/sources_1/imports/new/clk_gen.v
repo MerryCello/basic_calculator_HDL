@@ -20,25 +20,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module Clk_gen(
-    input clk,
-    input rst,
+module Clk_gen #(parameter DIV_BY = 17)(
+    input clk, rst,
     output clk_div
     );
     
-    reg [26:0] count;
+    reg [DIV_BY:0] count;
+    initial count = 0;
     
-    always @ (posedge clk, posedge rst) begin
-        if (rst)
-            count <= 0;
-        else
-            count <= count + 1;        
-    end
-    
-    // For hardware
-   assign clk_div = count[17];
-    // For simulation:
-    // assign clk_div = count[0];
+    always @ (posedge clk, posedge rst)
+        count <= rst ? 0 : count + 1;
+
+   assign clk_div = count[DIV_BY];
 
 endmodule
 

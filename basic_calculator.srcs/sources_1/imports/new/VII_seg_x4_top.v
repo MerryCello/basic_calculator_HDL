@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module VII_seg_x4_top(
+module VII_seg_x4_top #(parameter SIMULATING = 0)(
     input clk,          // Clock
     input btnC,         // Reset button
     input [15:0] sw,    // Switches divided in 4 nibles
@@ -34,7 +34,7 @@ module VII_seg_x4_top(
     
     // Bring down the clock frequency, so the display won't
     // seem to flicker to the human eye
-    Clk_gen clk_gen(
+    Clk_gen #(.DIV_BY(SIMULATING ? 0 : 17)) clk_gen(
         .clk(clk),
         .rst(btnC),
         .clk_div(clkd)
