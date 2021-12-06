@@ -172,8 +172,8 @@ module Calc_4fun #(
       case (operation)
          DIVIDE:    result = x / y;
          MULTIPLY:  result = x * y;
-         SUBSTRACT: result = x - y;
-         ADD:       result = x + y;
+         SUBSTRACT: result = fullAdd(x, 1'b1, y);
+         ADD:       result = fullAdd(x, 1'b0, y);
          default:   result = 16'h0000;
       endcase
    endtask
