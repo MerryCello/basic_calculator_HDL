@@ -42,20 +42,18 @@ module Calc_4fun #(
       output [15:0] led // temporary for debugging
    );
 
-   reg [15:0] x_input, y_input;     // The inputs as they are types
-   reg [15:0] num_disp;             // The digits to display
-   reg [3:0] operation;             // The math function that was selected
+   reg [15:0] x_input, y_input;     // Inputs as they are types
+   reg [15:0] num_disp;             // Digits to display
+   reg [3:0] operation;             // Math function that was selected
    reg E_pressed;                   // Track whether E (=) was pressed previously
    reg keyPress_deb, keyPress_tm1;  // Debounced keyPress pulse and timing register
    wire keyPress;                   // Pulse when key is pressed
    wire deb_clk;                    // debounce clock for keyPress
    wire [3:0] keyValue;             // Value of the last key pressed
+   wire [15:0] bcd;                 // Result from the binary to BCD conversion
+   wire bcd_ready;
    
-   // If no functions selected and execute was pressed then send data to display
-   // else send X to write to memory
-   // If a function was selected then send Y to write to memory
-//   assign data = mem_writeAndNotRead ? mem_in : mem_out;
-   assign led = {keyValue, 10'b0000000000, keyPress_deb, deb_clk};
+   assign led = {bcd};
    
    // Initial values for simulations
    initial begin
@@ -79,6 +77,13 @@ module Calc_4fun #(
       .keyPress_one(keyPress)
    );
    
+   Bin2BCD_4dig bin_to_bcd(
+      .clk(clk),
+      .bin(x_input),
+      .bcd(bcd),
+      .done(bcd_ready)
+   );
+   
    // Elongate the keyPress pulse (debounce it)
    Clk_gen #(.DIV_BY(SIMULATING ? 0 : 20)) deb_clk_divider(.clk(clk), .rst(1'b0), .clk_div(deb_clk));
    always@ (posedge keyPress, posedge deb_clk) begin
@@ -90,6 +95,17 @@ module Calc_4fun #(
       end
    end
    
+   always@ (bcd) begin
+      if (!(operation == NULL || E_pressed) || keyValue == EXECUTE)
+         num_disp = bcd;
+      else if (operation == NULL || x_input == 16'h0000 || E_pressed)
+         num_disp = x_input;
+      else if (keyValue == CLEAR)
+         num_disp = 16'h0000;
+      else if (!(operation == NULL || x_input == 16'h0000))
+         num_disp = y_input;
+   end
+   
    /////////////////////////////////////////////////////////////////////////////////////////////////
    ///////////////////////////////////// INTERFACE LOGIC ///////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,20 +113,21 @@ module Calc_4fun #(
    
       // Number input (0-9)
       if (keyValue >= 4'h0 && keyValue <= 4'h9) begin
-         // X input
          if (E_pressed) begin
             x_input = 16'h0000;
             y_input = 16'h0000;
             operation = NULL;
          end
+         
+         // X input
          if (operation == NULL || x_input == 16'h0000) begin
             x_input = {x_input[11:0], keyValue};
-         num_disp = x_input;
+//            num_disp = x_input;
          end
          // Y input
          else begin
             y_input = {y_input[11:0], keyValue};
-            num_disp = y_input;
+//            num_disp = y_input;
          end
          E_pressed = 1'b0;
       end
@@ -120,8 +137,10 @@ module Calc_4fun #(
                keyValue == MULTIPLY  ||
                keyValue == SUBSTRACT ||
                keyValue == ADD         ) begin
-         if (operation == NULL || E_pressed)
+         if (operation == NULL || E_pressed) begin
             operation = keyValue;
+//            num_disp = x_input;
+         end
          else begin
             operationMUX4to1(
                .x(x_input),
@@ -130,10 +149,10 @@ module Calc_4fun #(
                .result(x_input)
             );
             operation = keyValue;
+//            num_disp = bcd;
          end
          
          E_pressed = 1'b0;
-         num_disp = x_input;
          y_input = 16'h0000;
       end
       
@@ -149,7 +168,7 @@ module Calc_4fun #(
          );
          
          // make sure the result is displayed
-         num_disp = x_input;
+//         num_disp = bcd;
       end
       
       // Clear inputs and states (F)
@@ -157,7 +176,7 @@ module Calc_4fun #(
          E_pressed = 1'b0;
          x_input = 16'h0000;
          y_input = 16'h0000;
-         num_disp = 16'h0000;
+//         num_disp = 16'h0000;
          operation = NULL;
       end
    end
