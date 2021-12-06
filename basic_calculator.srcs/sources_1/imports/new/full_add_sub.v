@@ -27,13 +27,9 @@ module full_add_sub(
     );
     
     wire [15:0] c;       // carry-in/carry-out for adder
-    wire [15:0] x, y;    // x is MSB, y is LSB
     wire [15:0] B;       // the XOR output for y
     wire [15:0] s;       // sum of x and y
-    
-    
-    assign x = sw[15:8];
-    assign y = sw[7:0];
+
     
     // XOR logic outputs
     xor (B[0], y[0], op);

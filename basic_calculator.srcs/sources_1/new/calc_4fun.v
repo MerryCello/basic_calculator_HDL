@@ -47,6 +47,9 @@ module Calc_4fun #(
    reg [3:0] operation;             // The math function that was selected
    reg E_pressed;                   // Track whether E (=) was pressed previously
    reg keyPress_deb, keyPress_tm1;  // Debounced keyPress pulse and timing register
+   reg add_sub;                     // if 0 add, if 1 subtract
+   wire [15:0] add_sub_result;      // output for the add/subtract circuit
+   wire [31:0] multiply_result;     // output for the multiplier circuit
    wire keyPress;                   // Pulse when key is pressed
    wire deb_clk;                    // debounce clock for keyPress
    wire [3:0] keyValue;             // Value of the last key pressed
@@ -120,6 +123,11 @@ module Calc_4fun #(
                keyValue == MULTIPLY  ||
                keyValue == SUBSTRACT ||
                keyValue == ADD         ) begin
+         if (keyBalue == ADD)
+            add_sub = 0;
+         else if (keyValue == SUBTRACT)
+            add_sub = 1;
+            
          if (operation == NULL || E_pressed)
             operation = keyValue;
          else begin
@@ -165,6 +173,13 @@ module Calc_4fun #(
    /////////////////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////////////////
 
+   full_add_sub add_subtractor(
+            .x(x_input),
+            .y(y_input),
+            .op(add_sub),
+            .led(add_sub_result) 
+   );
+    
    task operationMUX4to1;
       input [15:0] x, y;
       input op;
@@ -172,8 +187,8 @@ module Calc_4fun #(
       case (operation)
          DIVIDE:    result = x / y;
          MULTIPLY:  result = x * y;
-         SUBSTRACT: result = fullAdd(x, 1'b1, y);
-         ADD:       result = fullAdd(x, 1'b0, y);
+         SUBSTRACT: result = add_sub_result;
+         ADD:       result = add_sub_result;
          default:   result = 16'h0000;
       endcase
    endtask
