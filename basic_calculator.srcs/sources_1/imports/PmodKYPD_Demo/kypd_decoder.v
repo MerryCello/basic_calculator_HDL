@@ -69,14 +69,14 @@ module Kypd_decoder #(parameter SIMULATING = 0)(
 	always @(posedge clk) begin
 
 			// 1ms
-			if (sclk == (SIMULATING ? 4'h0 : 20'b00011000011010100000)) begin
+			if (sclk == (SIMULATING ? 4'h1 : 20'b00011000011010100000)) begin
 				//C1
 				Col <= 4'b0111;
 				sclk <= sclk + 1'b1;
 			end
 			
 			// check row pins
-			else if(sclk == (SIMULATING ? 4'h1 : 20'b00011000011010101000)) begin
+			else if(sclk == (SIMULATING ? 4'h2 : 20'b00011000011010101000)) begin
 				//R1
 				if (Row == 4'b0111) begin
 					DecodeOut <= 4'b0001;		//1
@@ -101,14 +101,14 @@ module Kypd_decoder #(parameter SIMULATING = 0)(
 			end
 
 			// 2ms
-			else if(sclk == (SIMULATING ? 4'h2 : 20'b00110000110101000000)) begin
+			else if(sclk == (SIMULATING ? 4'h3 : 20'b00110000110101000000)) begin
 				//C2
 				Col<= 4'b1011;
 				sclk <= sclk + 1'b1;
 			end
 			
 			// check row pins
-			else if(sclk == (SIMULATING ? 4'h3 : 20'b00110000110101001000)) begin
+			else if(sclk == (SIMULATING ? 4'h4 : 20'b00110000110101001000)) begin
 				//R1
 				if (Row == 4'b0111) begin
 					DecodeOut <= 4'b0010; 		//2
@@ -133,14 +133,14 @@ module Kypd_decoder #(parameter SIMULATING = 0)(
 			end
 
 			//3ms
-			else if(sclk == (SIMULATING ? 4'h4 : 20'b01001001001111100000)) begin
+			else if(sclk == (SIMULATING ? 4'h5 : 20'b01001001001111100000)) begin
 				//C3
 				Col<= 4'b1101;
 				sclk <= sclk + 1'b1;
 			end
 			
 			// check row pins
-			else if(sclk == (SIMULATING ? 4'h5 : 20'b01001001001111101000)) begin
+			else if(sclk == (SIMULATING ? 4'h6 : 20'b01001001001111101000)) begin
 				//R1
 				if(Row == 4'b0111) begin
 					DecodeOut <= 4'b0011; 		//3	
@@ -166,14 +166,14 @@ module Kypd_decoder #(parameter SIMULATING = 0)(
 			end
 
 			//4ms
-			else if(sclk == (SIMULATING ? 4'h6 : 20'b01100001101010000000)) begin
+			else if(sclk == (SIMULATING ? 4'h7 : 20'b01100001101010000000)) begin
 				//C4
 				Col<= 4'b1110;
 				sclk <= sclk + 1'b1;
 			end
 
 			// Check row pins
-			else if(sclk == (SIMULATING ? 4'h7 : 20'b01100001101010001000)) begin
+			else if(sclk == (SIMULATING ? 4'h8 : 20'b01100001101010001000)) begin
 				//R1
 				if(Row == 4'b0111) begin
 					DecodeOut <= 4'b1010; //A
@@ -194,6 +194,18 @@ module Kypd_decoder #(parameter SIMULATING = 0)(
 					DecodeOut <= 4'b1101; //D
 					keyPress <= 1'b1;
 				end
+				
+				sclk <= sclk + 1'b1;
+				
+//				sclk <= (SIMULATING ? 4'h0 : 20'b00000000000000000000);
+				
+//            // reset because no key is being pressed
+//            keyPress <= 1'b0;
+			end
+			
+			//5ms
+			else if (sclk == (SIMULATING ? 4'h9 : 20'b1111010000100100000)) begin
+			   Col <= 4'b1111;
 				sclk <= (SIMULATING ? 4'h0 : 20'b00000000000000000000);
 				
             // reset because no key is being pressed

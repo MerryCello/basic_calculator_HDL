@@ -55,7 +55,7 @@
     <Option Name="IPUserFilesDir" Val="$PIPUSERFILESDIR"/>
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
-    <Option Name="WTXSimLaunchSim" Val="187"/>
+    <Option Name="WTXSimLaunchSim" Val="253"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -132,15 +132,6 @@
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../../Users/kevin/OneDrive/Documents/2021-Fall/ECEN-340_Digital-Systems-Design/w-11-12-13_Final-project/pmodkypd_demo_verilog/PmodKYPD_Demo/kypd_decoder.v"/>
           <Attr Name="ImportTime" Val="1638213975"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/Lab5 - Static_Sequential_Memories/memory.v">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../Users/kevin/OneDrive/Documents/2021-Fall/ECEN-340_Digital-Systems-Design/w-08_memory-concepts/Lab5_Static_Sequential_Memories/Static_Sequential_Memories/Static_Sequential_Memories.srcs/sources_1/imports/Lab5 - Static_Sequential_Memories/memory.v"/>
-          <Attr Name="ImportTime" Val="1635805058"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>

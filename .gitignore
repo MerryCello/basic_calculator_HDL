@@ -72,3 +72,5 @@ xvlog.*
 ## checkpoint files
 *.dcp
 
+## do not ignore these saved bitstreams
+!working_bitstream_milestones/*
