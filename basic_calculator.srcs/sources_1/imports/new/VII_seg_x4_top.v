@@ -47,11 +47,8 @@ module VII_seg_x4_top #(parameter SIMULATING = 0)(
          anSel = 4'b0111;
          if (sw[11:8] == 4'h0) begin
             anSel = 4'b0011;
-            if (sw[7:4] == 4'h0) begin
+            if (sw[7:4] == 4'h0)
                anSel = 4'b0001;
-               if (sw[3:0] == 4'h0)
-                  anSel = 4'b0000;
-            end
          end
       end
       else
