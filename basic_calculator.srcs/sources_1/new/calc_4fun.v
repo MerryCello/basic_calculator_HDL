@@ -97,8 +97,12 @@ module Calc_4fun #(
    
       // Number input (0-9)
       if (keyValue >= 4'h0 && keyValue <= 4'h9) begin
-         E_pressed = 1'b0;
          // X input
+         if (E_pressed) begin
+            x_input = 16'h0000;
+            y_input = 16'h0000;
+            operation = NULL;
+         end
          if (operation == NULL || x_input == 16'h0000) begin
             x_input = {x_input[11:0], keyValue};
          num_disp = x_input;
@@ -108,6 +112,7 @@ module Calc_4fun #(
             y_input = {y_input[11:0], keyValue};
             num_disp = y_input;
          end
+         E_pressed = 1'b0;
       end
       
       // Function input (A-B)
