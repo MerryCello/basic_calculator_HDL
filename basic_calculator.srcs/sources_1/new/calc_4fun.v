@@ -46,26 +46,21 @@ module Calc_4fun #(
    reg [15:0] num_disp;             // The digits to display
    reg [3:0] operation;             // The math function that was selected
    reg E_pressed;                   // Track whether E (=) was pressed previously
+   reg substracting;                // 1 is a substraction and 0 is an addition
    reg keyPress_deb, keyPress_tm1;  // Debounced keyPress pulse and timing register
    wire keyPress;                   // Pulse when key is pressed
    wire deb_clk;                    // debounce clock for keyPress
    wire [3:0] keyValue;             // Value of the last key pressed
+   wire [15:0] add_sub_result;      // result from the adder and substractor function
+   wire [31:0] mult_result;         // result from the multiplier function
    
-   // If no functions selected and execute was pressed then send data to display
-   // else send X to write to memory
-   // If a function was selected then send Y to write to memory
-//   assign data = mem_writeAndNotRead ? mem_in : mem_out;
    assign led = {keyValue, 10'b0000000000, keyPress_deb, deb_clk};
    
    // Initial values for simulations
    initial begin
-      x_input  = 16'h0000;
-      y_input  = 16'h0000;
-      num_disp = 16'h0000;
-      operation = 4'h0;
-      E_pressed = 1'b0;
-      keyPress_deb = 1'b0;
-      keyPress_tm1 = 1'b0;
+      x_input = 16'h0000;  y_input = 16'h0000;  num_disp = 16'h0000;
+      operation = 4'h0;    E_pressed = 1'b0;    substracting = 1'b0;
+      keyPress_deb = 1'b0; keyPress_tm1 = 1'b0;
    end
 
    // Keypad decoder
@@ -90,19 +85,19 @@ module Calc_4fun #(
       end
    end
    
-   /////////////////////////////////////////////////////////////////////////////////////////////////
    ///////////////////////////////////// INTERFACE LOGIC ///////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////////////////
    always@ (posedge keyPress_deb) begin
    
       // Number input (0-9)
       if (keyValue >= 4'h0 && keyValue <= 4'h9) begin
-         // X input
          if (E_pressed) begin
             x_input = 16'h0000;
             y_input = 16'h0000;
             operation = NULL;
          end
+         
+         // X input
          if (operation == NULL || x_input == 16'h0000) begin
             x_input = {x_input[11:0], keyValue};
          num_disp = x_input;
@@ -120,6 +115,12 @@ module Calc_4fun #(
                keyValue == MULTIPLY  ||
                keyValue == SUBSTRACT ||
                keyValue == ADD         ) begin
+
+         if (keyValue == SUBSTRACT)
+            substracting = 1'b1;
+         else if (keyValue == ADD)
+            substracting = 1'b0;
+               
          if (operation == NULL || E_pressed)
             operation = keyValue;
          else begin
@@ -163,7 +164,10 @@ module Calc_4fun #(
    end
    /////////////////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////////////////
-   /////////////////////////////////////////////////////////////////////////////////////////////////
+
+   Full_add_sub adder_substractor(.x(x_input), .y(y_input), .sub(substracting), .result(add_sub_result));
+   Multiplier mult(.x(x_input), .y(y_input), .result(mult_result));
+   // TODO: ADD DIVIDER
 
    task operationMUX4to1;
       input [15:0] x, y;
@@ -171,9 +175,10 @@ module Calc_4fun #(
       output [15:0] result;
       case (operation)
          DIVIDE:    result = x / y;
-         MULTIPLY:  result = x * y;
-         SUBSTRACT: result = x - y;
-         ADD:       result = x + y;
+         MULTIPLY:  result = mult_result[15:0]; // cutoff the result, limiting how
+                                                // big the multipliers can be for out 4 digit display
+         SUBSTRACT: result = add_sub_result;
+         ADD:       result = add_sub_result;
          default:   result = 16'h0000;
       endcase
    endtask
