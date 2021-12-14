@@ -1,39 +1,33 @@
 # Basic Calculator
 ## *An ECEN 340 final project - fall 2021*
-Simple 4 function calculator.
+A Simple 4 function calculator. The 4 functions included are:
+- Divide
+- Multiply
+- Substract
+- Add
 
-## How to send changes to code repository
------------------------------------------
-### **Command line (from project dir)**
-1. `git add .`
-1. `git commit -m "your commit message in the quotes"`
-1. `git pull` (Make sure that there aren't any changes made that you need to bring in to your code)
-1. `git push` (after merging changes AND repeating steps 1 and 2)
-1. Create Pull Request (PR), and wait for someone to review it
-1. Once PR is reviewed, merge your changes into the main code base
+With an addition of a clear and an execute button. The project was completed using Vivado 2021.2 in Verilog.
 
-### **Using VS Code**
-[See full instructions here][git-vs-code-intructions]
-1. Make changes in Vivado
-1. Go to Git in VS Code\
-![](./doc/g1.png)
-1. Add any file you want to send at once (clicking the `+`)\
-![](./doc/g2.png)
-1. Once the file(s) is added, it will look like this\
-![](./doc/g3.png)
-1. After adding the file(s) with changes, commit them with the checkmark\
-![](./doc/g4.png)
-1. Send your changes to the repository\
-![](./doc/g5.png)
-1. Go to GitHub, and create a Pull Request (PR) (under Pull Requests). [See full explanation here][github-pr-instructions]\
-![](./doc/g7.png)
-1. Make sure you're creating a PR for the right branch to master\
-![](./doc/g6.png)
-1. Once the PR has been reviewed by one of us, go ahead and merge it\
-![](./doc/g8.png)
+## Simulation Tests
+-------------------
+![](./doc/1_timing_diagram_adder.png)
+*Figure 1 - Keypad inputs of "3 + 3 =" with result shown in "num_disp"*
+</br></br>
 
+![](./doc/2_timing_diagram_multiplier.png)
+*Figure 2 - Keypad inputs of "* 6 =" with result shown in "num_disp"*
+</br></br>
+
+![](./doc/3_timing_diagram_divider.png)
+*Figure 3 - Keypad inputs of "24 / 2 =" with result shown in "num_disp"*
+</br></br>
+
+![](./doc/4_timing_diagram_overall.png)
+*Figure 4 - Overall of simulation tests*
+</br></br>
+
+[Learn how to contribute to the project here][contributing_doc]
 
 
 <!-- LINKS -->
-[git-vs-code-intructions]: https://zeroesandones.medium.com/how-to-commit-and-push-your-changes-to-your-github-repository-in-vscode-77a7a3d7dd02
-[github-pr-instructions]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request
+[contributing_doc]: ./doc/contributing.md
